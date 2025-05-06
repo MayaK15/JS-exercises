@@ -14,7 +14,7 @@
         The CSV files contains historical stock data for a number of companies.
         There is a CSV file for each of the following symbols: AAPL, GOOGL, MSFT, NFLX, NVDA, and SPOT.
         The name of each CSV file follows a consistent format (e.g.
-        <a href="https://raw.githubusercontent.com/prof-rossetti/intro-software-dev-python-book/refs/heads/main/docs/data/daily_adjusted_NFLX.csv">"daily_adjusted_NFLX.csv"</a>
+        <a href="https://raw.githubusercontent.com/prof-rossetti/intro-software-dev-python-book/refs/heads/main/docs/data/daily_adjusted_GOOGL.csv">"daily_adjusted_GOOGL.csv"</a>
         for NFLX).
         This data was originally obtained from the AlphaVantage API.
     </p>
@@ -84,9 +84,9 @@
         }
 
 
-        var symbol = "NFLX" // one of: [AAPL, GOOGL, MSFT, NFLX, NVDA, SPOT]
+        var symbol = "GOOGL"
         var filename = `daily_adjusted_${symbol}.csv`
-        var requestUrl = `https://raw.githubusercontent.com/prof-rossetti/intro-software-dev-python-book/refs/heads/main/docs/data/${filename}`
+        var requestUrl = `https://raw.githubusercontent.com/prof-rossetti/intro-software-dev-python-book/refs/heads/main/docs/data/daily_adjusted_GOOGL.csv`
 
         d3.csv(requestUrl).then(function(data) {
             console.log("DATA:", data)
@@ -95,12 +95,28 @@
             console.log("PART 1...")
 
 
+            var earliest = data[data.length - 1]
+            var latest = data[0]
+
+            var earliestClose =  parseFloat(earliest.adjusted_close)
+            var latestClose =  parseFloat(latest.adjusted_close)
+
+            console.log("DAYS:", data.length)
+            console.log("... EARLIEST:", earliest.timestamp, formatUSD(earliestClose))
+            console.log("... LATEST:", latest.timestamp, formatUSD(latestClose))
+
+            var pctChange = (latestClose - earliestClose) / earliestClose
+            console.log("PERCENT CHANGE:", formatPct(pctChange))
 
 
 
             console.log("---------------------")
             console.log("PART 2...")
 
+            document.getElementById("display-symbol").textContent = symbol
+            document.getElementById("display-earliest").textContent = `${earliest.timestamp} (${formatUSD(earliestClose)})`
+            document.getElementById("display-latest").textContent = `${latest.timestamp} (${formatUSD(latestClose)})`
+            document.getElementById("display-pct-change").textContent = formatPct(pctChange)
 
 
 
